@@ -22,7 +22,7 @@ const Login = () => {
   });
 
   const onSubmit = async (data: LoginFormData) => {
-    const success = await login(data.matricula, data.senha);
+    const success = await login(data.email, data.senha);
     if (success) {
       toast.success('Login realizado com sucesso!');
       navigate('/dashboard');
@@ -49,16 +49,16 @@ const Login = () => {
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="matricula">Matrícula</Label>
+              <Label htmlFor="email">Matrícula</Label>
               <Input
-                id="matricula"
+                id="email"
                 type="text"
                 placeholder="Digite sua matrícula"
-                {...register('matricula')}
-                className={errors.matricula ? 'border-destructive' : ''}
+                {...register('email')}
+                className={errors.email ? 'border-destructive' : ''}
               />
-              {errors.matricula && (
-                <p className="text-sm text-destructive">{errors.matricula.message}</p>
+              {errors.email && (
+                <p className="text-sm text-destructive">{errors.email.message}</p>
               )}
             </div>
 
@@ -85,7 +85,7 @@ const Login = () => {
                 🔒 Esqueci minha senha
               </button>
               <Link to="/cadastro" className="text-primary hover:underline">
-                🆕 Criar Senha de acesso
+                🆕 Criar Nova Conta
               </Link>
             </div>
           </form>

@@ -14,14 +14,14 @@ export const getById = async (req: Request, res: Response) => {
 }
 
 export const create = async (req: Request, res: Response) => {
-    const { email, name, password, image } = req.body;
+    const { email, name, password, image, birthDate,cpf} = req.body;
     if (!email || !password) {
         return res.status(400).json({
             message: 'email e password são obrigatórios'
         });
     }
     const user = await UsersService.create({
-        email, name, password, image
+        email, name, password, image, birthDate,cpf
     });
     res.status(201).json(user);
 }

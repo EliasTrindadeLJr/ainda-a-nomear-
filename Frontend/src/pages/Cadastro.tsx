@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { cadastroSchema, CadastroFormData } from '@/lib/schemas';
 import { toast } from 'sonner';
 import { Shield, ArrowLeft } from 'lucide-react';
+import { cadastrarAluno } from '@/lib/users';
 
 const Cadastro = () => {
   const navigate = useNavigate();
@@ -19,11 +20,16 @@ const Cadastro = () => {
     resolver: zodResolver(cadastroSchema),
   });
 
-  const onSubmit = async (data: CadastroFormData) => {
-    // Simulação de cadastro
-    toast.success('Cadastro realizado com sucesso!');
-    setTimeout(() => navigate('/login'), 1500);
-  };
+const onSubmit = async (data: CadastroFormData) => {
+  try {
+    await cadastrarAluno(data);
+
+    toast.success("Cadastro realizado com sucesso!");
+    setTimeout(() => navigate("/login"), 1500);
+  } catch (error: any) {
+    toast.error(error.message || "Erro ao cadastrar");
+  }
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-muted/30 to-background p-4">
@@ -43,43 +49,43 @@ const Cadastro = () => {
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="nome">Nome Completo</Label>
+              <Label htmlFor="name">Nome Completo</Label>
               <Input
-                id="nome"
+                id="name"
                 type="text"
                 placeholder="Digite seu nome completo"
-                {...register('nome')}
-                className={errors.nome ? 'border-destructive' : ''}
+                {...register('name')}
+                className={errors.name ? 'border-destructive' : ''}
               />
-              {errors.nome && (
-                <p className="text-sm text-destructive">{errors.nome.message}</p>
+              {errors.name && (
+                <p className="text-sm text-destructive">{errors.name.message}</p>
               )}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="endereco">Endereço</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
-                id="endereco"
+                id="email"
                 type="text"
                 placeholder="Digite seu endereço completo"
-                {...register('endereco')}
-                className={errors.endereco ? 'border-destructive' : ''}
+                {...register('email')}
+                className={errors.email ? 'border-destructive' : ''}
               />
-              {errors.endereco && (
-                <p className="text-sm text-destructive">{errors.endereco.message}</p>
+              {errors.email && (
+                <p className="text-sm text-destructive">{errors.email.message}</p>
               )}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="dataNascimento">Data de Nascimento</Label>
+              <Label htmlFor="birthDate">Data de Nascimento</Label>
               <Input
-                id="dataNascimento"
+                id="birthDate"
                 type="date"
-                {...register('dataNascimento')}
-                className={errors.dataNascimento ? 'border-destructive' : ''}
+                {...register('birthDate')}
+                className={errors.birthDate ? 'border-destructive' : ''}
               />
-              {errors.dataNascimento && (
-                <p className="text-sm text-destructive">{errors.dataNascimento.message}</p>
+              {errors.birthDate && (
+                <p className="text-sm text-destructive">{errors.birthDate.message}</p>
               )}
             </div>
 
@@ -94,6 +100,20 @@ const Cadastro = () => {
               />
               {errors.cpf && (
                 <p className="text-sm text-destructive">{errors.cpf.message}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="password">Senha</Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="Digite sua senha"
+                {...register('password')}
+                className={errors.password ? 'border-destructive' : ''}
+              />
+              {errors.password && (
+                <p className="text-sm text-destructive">{errors.password.message}</p>
               )}
             </div>
 

@@ -1,10 +1,32 @@
 import prisma from '../prisma/client.js';
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcrypt';
+
 type User = {
+    matricula?: string | null;
     email?: string;
     name?: string | null;
     password?: string;
-    image?: string | null
+    image?: string | null;
+    birthDate?: Date | string;
+    cpf?: string;
+};
+
+async function gerarMatricula() {
+    const ano = new Date().getFullYear();
+
+    const ultimo = await prisma.user.findFirst({
+        orderBy: { matricula: "desc" }
+    });
+
+    let numero = 1;
+
+    if (ultimo?.matricula) {
+        const seq = Number(ultimo.matricula.slice(4)); 
+        numero = seq + 1;
+    }
+
+    // formato: 20250001
+    return `${ano}${numero.toString().padStart(4, '0')}`;
 }
 
 export async function list() {
@@ -12,17 +34,22 @@ export async function list() {
 }
 
 export async function getById(id: string) {
-    return prisma.user.findUnique({ where: { id } })
+    return prisma.user.findUnique({ where: { id } });
 }
 
 export async function create(
-    data: { email: string; name?: string | null; password: string, image?: string | null}
+    data: { email: string; name?: string | null; password: string; image?: string | null; birthDate: Date | string; cpf: string; }
 ) {
     const hashed = await bcrypt.hash(data.password, 10);
-    return prisma.user.create({ 
+
+    // Gera matrícula automática
+    const matricula = await gerarMatricula();
+
+    return prisma.user.create({
         data: {
             ...data,
-            password: hashed
+            password: hashed,
+            matricula   // adiciona ao banco
         }
     });
 }
@@ -35,5 +62,5 @@ export async function update(id: string, data: User) {
 }
 
 export async function remove(id: string) {
-    return prisma.user.delete({ where: { id } })
+    return prisma.user.delete({ where: { id } });
 }
