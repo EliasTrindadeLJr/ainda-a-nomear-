@@ -9,6 +9,7 @@ type User = {
     image?: string | null;
     birthDate?: Date | string;
     cpf?: string;
+    role?: 'aluno' | 'admin'; // adiciona role
 };
 
 async function gerarMatricula() {
@@ -38,7 +39,15 @@ export async function getById(id: string) {
 }
 
 export async function create(
-    data: { email: string; name?: string | null; password: string; image?: string | null; birthDate: Date | string; cpf: string; }
+    data: { 
+        email: string; 
+        name?: string | null; 
+        password: string; 
+        image?: string | null; 
+        birthDate: Date | string; 
+        cpf: string;
+        role?: 'aluno' | 'admin'; // opcional, se não passar assume aluno
+    }
 ) {
     const hashed = await bcrypt.hash(data.password, 10);
 
@@ -49,7 +58,8 @@ export async function create(
         data: {
             ...data,
             password: hashed,
-            matricula   // adiciona ao banco
+            matricula,
+            role: data.role ?? 'aluno' // default 'aluno'
         }
     });
 }

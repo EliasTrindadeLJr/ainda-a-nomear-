@@ -27,7 +27,7 @@ const Login = () => {
       toast.success('Login realizado com sucesso!');
       navigate('/dashboard');
     } else {
-      toast.error('Matrícula ou senha incorretos');
+      toast.error('Email ou senha incorretos');
     }
   };
 
@@ -49,11 +49,11 @@ const Login = () => {
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Matrícula</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 type="text"
-                placeholder="Digite sua matrícula"
+                placeholder="Digite seu Email"
                 {...register('email')}
                 className={errors.email ? 'border-destructive' : ''}
               />

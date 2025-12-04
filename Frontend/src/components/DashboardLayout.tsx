@@ -109,7 +109,7 @@ const DashboardLayout = () => {
             <Button variant="ghost" className="flex items-center gap-2">
               <Avatar className="h-8 w-8">
                 <AvatarFallback className="bg-primary text-primary-foreground">
-                  {user?.nome.charAt(0) || 'U'}
+                  {(user?.nome?.charAt(0) ?? user?.email?.charAt(0) ?? 'U')}
                 </AvatarFallback>
               </Avatar>
               <ChevronDown className="h-4 w-4 hidden sm:block" />
@@ -145,7 +145,7 @@ const DashboardLayout = () => {
               <div className="flex items-center gap-3 mb-2">
                 <Avatar className="h-12 w-12">
                   <AvatarFallback className="bg-background text-primary">
-                    {user?.nome.charAt(0) || 'U'}
+                    {(user?.nome?.charAt(0) ?? user?.email?.charAt(0) ?? 'U')}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">

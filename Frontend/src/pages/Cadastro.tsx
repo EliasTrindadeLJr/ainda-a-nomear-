@@ -67,7 +67,7 @@ const onSubmit = async (data: CadastroFormData) => {
               <Input
                 id="email"
                 type="text"
-                placeholder="Digite seu endereço completo"
+                placeholder="Digite seu Email"
                 {...register('email')}
                 className={errors.email ? 'border-destructive' : ''}
               />
@@ -88,7 +88,6 @@ const onSubmit = async (data: CadastroFormData) => {
                 <p className="text-sm text-destructive">{errors.birthDate.message}</p>
               )}
             </div>
-
             <div className="space-y-2">
               <Label htmlFor="cpf">CPF</Label>
               <Input
@@ -97,6 +96,16 @@ const onSubmit = async (data: CadastroFormData) => {
                 placeholder="000.000.000-00"
                 {...register('cpf')}
                 className={errors.cpf ? 'border-destructive' : ''}
+                onChange={(e) => {
+                  let value = e.target.value;
+                  value = value.replace(/\D/g, '');
+                  value = value
+                    .replace(/(\d{3})(\d)/, '$1.$2')
+                    .replace(/(\d{3})(\d)/, '$1.$2')
+                    .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                  e.target.value = value;
+                  register('cpf').onChange(e);
+                }}
               />
               {errors.cpf && (
                 <p className="text-sm text-destructive">{errors.cpf.message}</p>

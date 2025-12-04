@@ -1,9 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
+type Role = 'admin' | 'aluno';
+
 interface User {
   id: string;
+  name: string;
   email: string;
-  nome?: string;
+  matricula?: string;
+  role: string;
 }
 
 interface AuthContextType {
@@ -11,6 +15,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
   isAuthenticated: boolean;
+  isAdmin: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -32,13 +37,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
 
       const data = await response.json();
+      if (data.error) return false;
 
-      if (data.error) return false; // senha errada ou usuário não existe
+      // Garante que role seja minúsculo
+      const userWithRole = {
+        ...data.user,
+        role: data.user.role.toLowerCase() // aqui!
+      };
 
       localStorage.setItem("token", data.access_token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("user", JSON.stringify(userWithRole));
 
-      setUser(data.user);
+      setUser(userWithRole);
       return true;
 
     } catch (error) {
@@ -46,6 +56,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return false;
     }
   };
+
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -58,7 +69,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       user,
       login,
       logout,
-      isAuthenticated: !!user
+      isAuthenticated: !!user,
+      isAdmin: user?.role === 'admin'
     }}>
       {children}
     </AuthContext.Provider>
