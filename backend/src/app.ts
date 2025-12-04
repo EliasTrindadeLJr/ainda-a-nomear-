@@ -5,6 +5,8 @@ import routes from './routes'
 import authRoutes from "./routes/auth.route";
 import boletosRouter from './routes/boletos.routes';
 import notasRouter from './routes/notas.routes';
+import paymentRouter from './routes/payment.routes';
+
 dotenv.config()
 
 const app = express()
@@ -24,5 +26,6 @@ app.use('/api', routes);
 app.use("/api/auth", authRoutes);
 app.use('/api/boletins', notasRouter);
 app.use('/boletos', boletosRouter);
+app.use('/webhook/asaas',paymentRouter)
 
 export default app;

@@ -19,37 +19,46 @@ interface TokenData {
 
 class AuthService {
     public async execute({ email, password: pwd }: UserRequest) {
-        // Check if user exists
+
         const user = await prisma.user.findUnique({
             where: { email }
-        })
+        });
 
         if (!user) {
-            throw new Error('User not found')
+            throw new Error('User not found');
         }
 
-        const passwordMatch = await bcrypt.compare(pwd, user.password)
+        const passwordMatch = await bcrypt.compare(pwd, user.password);
 
         if (!passwordMatch) {
-            throw new Error('Invalid password')
+            throw new Error('Invalid password');
         }
 
-        const expiresIn = 60 * 60 // 1 hour
-        const secretKey = process.env.ACCESS_TOKEN_SECRET!
+        const expiresIn = 60 * 60; // 1 hour
+        const secretKey = process.env.ACCESS_TOKEN_SECRET!;
+
         const dataStoredInToken = {
             id: user.id,
-            email: user.email
+            email: user.email,
+            role: user.role   // <-- AQUI
         }
-        const token = jwt.sign(dataStoredInToken, secretKey, { expiresIn })
+
+        const token = jwt.sign(dataStoredInToken, secretKey, { expiresIn });
 
         const tokenData: TokenData = {
             access_token: token,
             expires_in: expiresIn
-        }
+        };
 
-        const { password, ...userData } = user
+        const { password, ...userData } = user;
 
-        return { user: userData, ...tokenData }
+        return {
+            user: {
+                ...userData,
+                role: user.role.toLowerCase()  // ← ESSENCIAL
+            },
+            ...tokenData
+        };
     }
 }
 
