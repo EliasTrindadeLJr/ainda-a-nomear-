@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import routes from './routes'
 import authRoutes from "./routes/auth.route";
+import boletosRouter from './routes/boletos.routes';
 dotenv.config()
 
 const app = express()
@@ -20,4 +21,6 @@ app.get("/api/teste", (req, res) => {
 
 app.use('/api', routes);
 app.use("/api/auth", authRoutes);
+app.use('/boletos', boletosRouter);
+
 export default app;

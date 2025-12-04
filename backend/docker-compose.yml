@@ -68,6 +68,9 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - stack
+      
 
   pgadmin:
     image: dpage/pgadmin4:7
@@ -81,10 +84,6 @@ services:
       - data_pgadmin:/var/lib/pgadmin
     networks:
       - stack
-    profiles:
-      - development
-      - alpha
-      - beta
 
 volumes:
   data_pgdir:
@@ -94,3 +93,7 @@ volumes:
   data_pgadmin:
     name: data_pgadmin
     external: true
+networks:
+  stack:
+    external: true
+    name: elias
