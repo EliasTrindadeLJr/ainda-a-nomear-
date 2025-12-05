@@ -5,7 +5,7 @@ import routes from './routes'
 import authRoutes from "./routes/auth.route";
 import boletosRouter from './routes/boletos.routes';
 import notasRouter from './routes/notas.routes';
-import paymentRouter from './routes/payment.routes';
+import alunosRouter from './routes/users.route';
 
 dotenv.config()
 
@@ -25,7 +25,8 @@ app.get("/api/teste", (req, res) => {
 app.use('/api', routes);
 app.use("/api/auth", authRoutes);
 app.use('/api/boletins', notasRouter);
+app.use('/api/notas', notasRouter);
 app.use('/boletos', boletosRouter);
-app.use('/webhook/asaas',paymentRouter)
+app.use('/api/alunos', alunosRouter);
 
 export default app;

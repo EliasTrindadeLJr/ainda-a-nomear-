@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
 import * as UsersService from '../services/users.service';
+import prisma from '@/prisma/client';
 
 export async function list(req: Request, res: Response) {
     const users = await UsersService.list();
@@ -54,3 +55,21 @@ export const remove = async (req: Request, res: Response) => {
         throw error;
     }
 }
+
+export const buscarAlunos = async (req: Request, res: Response) => {
+  const { search } = req.query;
+  if (!search || typeof search !== "string") {
+    return res.status(400).json({ error: "Parâmetro 'search' obrigatório" });
+  }
+  try {
+    const alunos = await prisma.user.findMany({
+      where: { name: { contains: search, mode: "insensitive" } },
+      select: { id: true, name: true },
+      orderBy: { name: "asc" }
+    });
+    res.json(alunos);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Erro ao buscar alunos" });
+  }
+};

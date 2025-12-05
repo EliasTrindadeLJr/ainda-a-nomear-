@@ -1,29 +1,50 @@
 import nodemailer from "nodemailer";
 
-class EmailService {
-  private transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL_USER!,
-      pass: process.env.EMAIL_PASS!
+export async function sendEmailToResponsible({
+    email,
+    aluno,
+    disciplina,
+    nota1,
+    nota2,
+    notaFinal,
+    situacao
+}) {
+    if (!email) {
+        console.warn("⚠ Email não encontrado para o aluno");
+        return;
     }
-  });
 
-  async sendPaymentConfirmation(to: string, description: string) {
-    await this.transporter.sendMail({
-      from: `"Financeiro" <${process.env.EMAIL_USER}>`,
-      to,
-      subject: "Pagamento Confirmado",
-      text: `Seu pagamento foi confirmado: ${description}`,
-      html: `
-        <h2>Pagamento Confirmado</h2>
-        <p>O pagamento referente ao seguinte item foi confirmado:</p>
-        <b>${description}</b>
-      `
+    const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            user: process.env.EMAIL_USER, // seu gmail
+            pass: process.env.EMAIL_PASS  // app password do gmail
+        },
+        tls: {
+            rejectUnauthorized: false
+        }
     });
-  }
-}
 
-export default new EmailService();
+    const msg = `
+Olá ${aluno},
+
+Uma nova atualização de nota foi registrada no sistema acadêmico:
+
+📚 *Disciplina:* ${disciplina}
+📝 *Nota 1:* ${nota1 ?? "—"}
+📝 *Nota 2:* ${nota2 ?? "—"}
+🏁 *Nota Final:* ${notaFinal ?? "—"}
+📌 *Situação:* ${situacao}
+
+Acesse o portal do aluno para mais detalhes.
+`;
+
+    await transporter.sendMail({
+        from: `Sistema Acadêmico <${process.env.EMAIL_USER}>`,
+        to: email,
+        subject: `Atualização de nota - ${disciplina}`,
+        text: msg
+    });
+
+    console.log(`📧 Email enviado para ${email}`);
+}
